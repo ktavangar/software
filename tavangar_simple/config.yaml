@@ -2,9 +2,9 @@ setup:
     simple_dir : '/home/s1/tavangar/tavangar_simple'
 
 output:
-    results_dir : '.'
-    log_dir     : '.'
-    save_dir    : '.'
+    results_dir : '/home/s1/tavangar/decals_dr7_results'
+    log_dir     : '/home/s1/tavangar/decals_dr7_log'
+    save_dir    : '/home/s1/tavangar/decals_dr7_save'
 
 batch:
     jobs: 10s
