@@ -161,7 +161,7 @@ def analysis(targ_ra, targ_dec, mod, mc_source_id):
 
     return(data, iso, g_radius, nbhd)
 
-def density_plot(targ_ra, targ_dec, data, iso, g_radius, nbhd, type):
+def density_plot(ax, targ_ra, targ_dec, data, iso, g_radius, nbhd, type):
     """Stellar density plot"""
 
     if type == 'stars':
@@ -190,20 +190,20 @@ def density_plot(targ_ra, targ_dec, data, iso, g_radius, nbhd, type):
     sigma = 0.01 * (0.25 * np.arctan(0.25*g_radius*60. - 1.5) + 1.3)
     
     convolution = scipy.ndimage.filters.gaussian_filter(signal, sigma/(bound/steps))
-    plt.pcolormesh(bins, bins, convolution.T, cmap='Greys')
+    ax.pcolormesh(bins, bins, convolution.T, cmap='Greys')
 
-    plt.xlim(bound, -bound)
-    plt.ylim(-bound, bound)
-    plt.gca().set_aspect('equal')
-    plt.xlabel(r'$\Delta \alpha$ (deg)')
-    plt.ylabel(r'$\Delta \delta$ (deg)')
+    ax.xlim(bound, -bound)
+    ax.ylim(-bound, bound)
+    ax.gca().set_aspect('equal')
+    ax.xlabel(r'$\Delta \alpha$ (deg)')
+    ax.ylabel(r'$\Delta \delta$ (deg)')
 
-    ax = plt.gca()
-    divider = make_axes_locatable(ax)
+    axe = plt.gca()
+    divider = make_axes_locatable(axe)
     cax = divider.append_axes('right', size = '5%', pad=0)
-    plt.colorbar(cax=cax)
+    ax.colorbar(cax=cax)
 
-def star_plot(targ_ra, targ_dec, data, iso, g_radius, nbhd):
+def star_plot(ax, targ_ra, targ_dec, data, iso, g_radius, nbhd):
     """Star bin plot"""
 
     filter = filters.star_filter(survey, data)
@@ -214,16 +214,16 @@ def star_plot(targ_ra, targ_dec, data, iso, g_radius, nbhd):
     proj = ugali.utils.projector.Projector(targ_ra, targ_dec)
     x, y = proj.sphereToImage(data[filter & iso_filter][basis_1], data[filter & iso_filter][basis_2])
 
-    plt.scatter(x, y, edgecolor='none', s=3, c='black')
-    plt.xlim(0.2, -0.2)
-    plt.ylim(-0.2, 0.2)
-    plt.gca().set_aspect('equal')
-    plt.xlabel(r'$\Delta \alpha$ (deg)')
-    plt.ylabel(r'$\Delta \delta$ (deg)')
+    ax.scatter(x, y, edgecolor='none', s=3, c='black')
+    ax.xlim(0.2, -0.2)
+    ax.ylim(-0.2, 0.2)
+    ax.gca().set_aspect('equal')
+    ax.xlabel(r'$\Delta \alpha$ (deg)')
+    ax.ylabel(r'$\Delta \delta$ (deg)')
 
-    plt.title('Stars')
+    ax.title('Stars')
 
-def cm_plot(targ_ra, targ_dec, data, iso, g_radius, nbhd, type):
+def cm_plot(ax, targ_ra, targ_dec, data, iso, g_radius, nbhd, type):
     """Color-magnitude plot"""
 
     angsep = ugali.utils.projector.angsep(targ_ra, targ_dec, data[basis_1], data[basis_2])
@@ -231,38 +231,38 @@ def cm_plot(targ_ra, targ_dec, data, iso, g_radius, nbhd, type):
 
     if type == 'stars':
         filter = filters.star_filter(survey, data)
-        plt.title('Stellar Color-Magnitude')
+        ax.title('Stellar Color-Magnitude')
     elif type == 'galaxies':
         filter = filters.galaxy_filter(survey, data)
-        plt.title('Galactic Color-Magnitude')
+        ax.title('Galactic Color-Magnitude')
 
     iso_filter = simple_utils.cut_isochrone_path(data[mag_dered_1], data[mag_dered_2], data[mag_err_1], data[mag_err_2], iso, radius=0.1, return_all=False)
 
     # Plot background objects
-    plt.scatter(data[mag_dered_1][filter & annulus] - data[mag_dered_2][filter & annulus], data[mag_dered_1][filter & annulus], c='k', alpha=0.1, edgecolor='none', s=1)
+    ax.scatter(data[mag_dered_1][filter & annulus] - data[mag_dered_2][filter & annulus], data[mag_dered_1][filter & annulus], c='k', alpha=0.1, edgecolor='none', s=1)
 
     # Plot isochrone
     ugali.utils.plotting.drawIsochrone(iso, lw=2, label='{} Gyr, z = {}'.format(iso.age, iso.metallicity))
 
     # Plot objects in nbhd
-    plt.scatter(data[mag_dered_1][filter & nbhd] - data[mag_dered_2][filter & nbhd], data[mag_dered_2][filter & nbhd], c='g', s=5, label='r < {:.3f}$^\circ$'.format(g_radius))
+    ax.scatter(data[mag_dered_1][filter & nbhd] - data[mag_dered_2][filter & nbhd], data[mag_dered_2][filter & nbhd], c='g', s=5, label='r < {:.3f}$^\circ$'.format(g_radius))
 
     # Plot objects in nbhd and near isochrone
-    plt.scatter(data[mag_dered_1][filter & nbhd & iso_filter] - data[mag_dered_2][filter & nbhd & iso_filter], data[mag_dered_1][filter & nbhd & iso_filter], c='r', s=5, label='$\Delta$CM < 0.1')
+    ax.scatter(data[mag_dered_1][filter & nbhd & iso_filter] - data[mag_dered_2][filter & nbhd & iso_filter], data[mag_dered_1][filter & nbhd & iso_filter], c='r', s=5, label='$\Delta$CM < 0.1')
 
-    plt.axis([-0.5, 1, 16, mag_max])
-    plt.gca().invert_yaxis()
-    plt.gca().set_aspect(1./4.)
-    plt.legend(loc='upper left')
-    plt.xlabel('{} - {} (mag)'.format(band_1.lower(), band_2.lower()))
-    plt.ylabel('{} (mag)'.format(band_1.lower()))
+    ax.axis([-0.5, 1, 16, mag_max])
+    ax.gca().invert_yaxis()
+    ax.gca().set_aspect(1./4.)
+    ax.legend(loc='upper left')
+    ax.xlabel('{} - {} (mag)'.format(band_1.lower(), band_2.lower()))
+    ax.ylabel('{} (mag)'.format(band_1.lower()))
 
-def hess_plot(targ_ra, targ_dec, data, iso, g_radius, nbhd):
+def hess_plot(ax, targ_ra, targ_dec, data, iso, g_radius, nbhd):
     """Hess plot"""
 
     filter = filters.star_filter(survey, data)
 
-    plt.title('Hess')
+    ax.title('Hess')
 
     c1 = SkyCoord(targ_ra, targ_dec, unit='deg')
 
@@ -295,26 +295,26 @@ def hess_plot(targ_ra, targ_dec, data, iso, g_radius, nbhd):
 
     cmap = matplotlib.cm.viridis
     cmap.set_bad('w', 1.)
-    plt.pcolormesh(xbins, ybins, signal, cmap=cmap)
+    ax.pcolormesh(xbins, ybins, signal, cmap=cmap)
 
-    plt.colorbar()
+    ax.colorbar()
 
     ugali.utils.plotting.drawIsochrone(iso, lw=2, c='k', zorder=10, label='Isocrhone')
 
-    plt.axis([-0.5, 1.0, 16, mag_max])
-    plt.gca().invert_yaxis()
-    plt.gca().set_aspect(1./4.)
-    plt.xlabel('{} - {} (mag)'.format(band_1.lower(), band_2.lower()))
-    plt.ylabel('{} (mag)'.format(band_1.lower()))
+    ax.axis([-0.5, 1.0, 16, mag_max])
+    ax.gca().invert_yaxis()
+    ax.gca().set_aspect(1./4.)
+    ax.xlabel('{} - {} (mag)'.format(band_1.lower(), band_2.lower()))
+    ax.ylabel('{} (mag)'.format(band_1.lower()))
 
-def radial_plot(targ_ra, targ_dec, data, iso, g_radius, nbhd, field_density=None):
+def radial_plot(ax, targ_ra, targ_dec, data, iso, g_radius, nbhd, field_density=None):
     """Radial distribution plot"""
 
     ## Deprecated?
     #filter_s = filters.star_filter(survey, data)
     #filter_g = filters.galaxy_filter(survey, data)
 
-    plt.title('Radial Distribution')
+    ax.title('Radial Distribution')
 
     angsep = ugali.utils.projector.angsep(targ_ra, targ_dec, data[basis_1], data[basis_2])
 
@@ -370,33 +370,33 @@ def radial_plot(targ_ra, targ_dec, data, iso, g_radius, nbhd, field_density=None
             if pairs[i] == peak:
                 return i
 
-    plt.axvline(x=f_range[peak_index(pairs,peak)], color='m', label='peak')
+    ax.axvline(x=f_range[peak_index(pairs,peak)], color='m', label='peak')
 
-    plt.axvline(x=g_radius, color='r', label='g_radius')
+    ax.axvline(x=g_radius, color='r', label='g_radius')
 
     f_range, f_val = interp_values('galaxies', 'f')
-    plt.plot(f_range, f_val, '-g', label='Filtered Galaxies')
+    ax.plot(f_range, f_val, '-g', label='Filtered Galaxies')
 
     f_range, f_val = interp_values('stars', 'u')
-    plt.plot(f_range, f_val, '-k', alpha=0.25, label='Unfiltered Stars')
+    ax.plot(f_range, f_val, '-k', alpha=0.25, label='Unfiltered Stars')
 
     val, y_err = value_errors('stars', 'f')
-    plt.plot(centers, val, '.b')
-    plt.errorbar(centers, val, yerr=y_err, fmt='none', ecolor='b', elinewidth=1, capsize=5)
+    ax.plot(centers, val, '.b')
+    ax.errorbar(centers, val, yerr=y_err, fmt='none', ecolor='b', elinewidth=1, capsize=5)
 
     f_range, f_val = interp_values('stars', 'f')
-    plt.plot(f_range, f_val, '-b', label='Filtered Stars')
+    ax.plot(f_range, f_val, '-b', label='Filtered Stars')
 
     if field_density:
-        plt.axhline(y=field_density, color='blue', ls='--', label='Model Field')
+        ax.axhline(y=field_density, color='blue', ls='--', label='Model Field')
 
-    ymax = plt.ylim()[1]
-    plt.annotate(r'$\approx %0.1f$' + str(round(g_radius, 3)) + '$^\circ$', (g_radius*1.1, ymax/50.), color='red', bbox=dict(boxstyle='round,pad=0.0', fc='white', alpha=0.75, ec='white', lw=0))
-    plt.xlim(bins[0], bins[-1])
-    plt.ylim(0., ymax)
-    plt.legend(loc='upper right')
-    plt.xlabel('Angular Separation (deg)')
-    plt.ylabel('Denisty (arcmin$^{-2})$')
+    ymax = ax.ylim()[1]
+    ax.annotate(r'$\approx %0.1f$' + str(round(g_radius, 3)) + '$^\circ$', (g_radius*1.1, ymax/50.), color='red', bbox=dict(boxstyle='round,pad=0.0', fc='white', alpha=0.75, ec='white', lw=0))
+    ax.xlim(bins[0], bins[-1])
+    ax.ylim(0., ymax)
+    ax.legend(loc='upper right')
+    ax.xlabel('Angular Separation (deg)')
+    ax.ylabel('Denisty (arcmin$^{-2})$')
 
 #def maglim_plot(targ_ra, targ_dec, data, iso, band):
 #    """Maglim plots"""
