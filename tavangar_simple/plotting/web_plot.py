@@ -17,7 +17,7 @@ import matplotlib.pylab as plt
 import ugali.utils.projector
 import ugali.candidate.associate
 
-import simple.plotting.diagnostic_plots
+import plotting.diagnostic_plots
 
 print(matplotlib.get_backend())
 
@@ -45,7 +45,7 @@ except:
     except:
         sys.exit('ERROR! Coordinates not given in correct format.')
 
-data, iso, g_radius, nbhd = simple.plotting.diagnostic_plots.analysis(targ_ra, targ_dec, mod, mc_source_id)
+data, iso, g_radius, nbhd = plotting.diagnostic_plots.analysis(targ_ra, targ_dec, mod, mc_source_id)
 
 print('Making diagnostic plots for ({}, {}) = ({}, {})...'.format(basis_1, basis_2, targ_ra, targ_dec))
 
@@ -54,11 +54,11 @@ file_name = 'candidate_{:0.2f}_{:0.2f}'.format(targ_ra, targ_dec)
 fig, axs = plt.subplots(1, 5, figsize=(24, 4))
 fig.subplots_adjust(wspace=0.5, hspace=0.5)
 
-simple.plotting.diagnostic_plots.star_plot(axs[0], targ_ra, targ_dec, data, iso, g_radius, nbhd)
-simple.plotting.diagnostic_plots.density_plot(axs[1], targ_ra, targ_dec, data, iso, g_radius, nbhd, 'stars')
-simple.plotting.diagnostic_plots.density_plot(axs[2], targ_ra, targ_dec, data, iso, g_radius, nbhd, 'galaxies')
-simple.plotting.diagnostic_plots.cm_plot(axs[3], targ_ra, targ_dec, data, iso, g_radius, nbhd, 'stars')
-simple.plotting.diagnostic_plots.hess_plot(axs[4], targ_ra, targ_dec, data, iso, g_radius, nbhd)
+plotting.diagnostic_plots.star_plot(axs[0], targ_ra, targ_dec, data, iso, g_radius, nbhd)
+plotting.diagnostic_plots.density_plot(axs[1], targ_ra, targ_dec, data, iso, g_radius, nbhd, 'stars')
+plotting.diagnostic_plots.density_plot(axs[2], targ_ra, targ_dec, data, iso, g_radius, nbhd, 'galaxies')
+plotting.diagnostic_plots.cm_plot(axs[3], targ_ra, targ_dec, data, iso, g_radius, nbhd, 'stars')
+plotting.diagnostic_plots.hess_plot(axs[4], targ_ra, targ_dec, data, iso, g_radius, nbhd)
 
 plt.savefig(save_dir+'/'+file_name+'.png', bbox_inches='tight')
 plt.close()
