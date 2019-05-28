@@ -22,14 +22,13 @@ from scipy import interpolate
 from scipy.signal import argrelextrema
 import scipy.ndimage
 
-import matplotlib.pylab as plt
+import pylab as plt
 import matplotlib
-from matplotlib.colors import ListedColormap
 from matplotlib import mlab
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-import simple.filters
-import simple.simple_utils
+import filters
+import simple_utils
 
 ################################################################################
 
@@ -69,54 +68,44 @@ mag_dered_2 = mag_dered.format(band_2.upper())
     
 ################################################################################
 
-# Set colors
-cmap_gray = matplotlib.cm.Greys
-cmap_color = matplotlib.cm.viridis
-c_color = cmap_color(0.25)
-p_color = cmap_color(1.0)
-cmap_gray_mask = ListedColormap(cmap_gray(np.linspace(0.1, 1.0, 100)))
-cmap_gray_mask.set_bad('white')
-
-################################################################################
-
-def analysis(ra, dec, mod, mc_source_id):
+def analysis(targ_ra, targ_dec, mod, mc_source_id):
     """Analyze a candidate"""
 
-    pix_nside_select = ugali.utils.healpix.angToPix(nside, ra, dec)
+    pix_nside_select = ugali.utils.healpix.angToPix(nside, targ_ra, targ_dec)
     ra_select, dec_select = ugali.utils.healpix.pixToAng(nside, pix_nside_select)
     pix_nside_neighbors = np.concatenate([[pix_nside_select], healpy.get_all_neighbours(nside, pix_nside_select)])
 
     # Construct data
-    #data = simple.simple_utils.construct_modal_data(mode, pix_nside_neighbors)
-    data = simple.simple_utils.construct_real_data(pix_nside_neighbors)
+    #data = simple_utils.construct_modal_data(mode, pix_nside_neighbors)
+    data = simple_utils.construct_real_data(pix_nside_neighbors)
     if (mode == 0):
         print('mode = 0: running only on real data')
     elif (mode == 1):
         print('mode = 1: running on real data and simulated data')
         
         # inject objects for simulated object of mc_source_id
-        sim_data = simple.simple_utils.construct_sim_data(pix_nside_neighbors, mc_source_id)
-        data = simple.simple_utils.inject_sim(data, sim_data, mc_source_id)
+        sim_data = simple_utils.construct_sim_data(pix_nside_neighbors, mc_source_id)
+        data = simple_utils.inject_sim(data, sim_data, mc_source_id)
     else:
         print('No mode specified; running only on real data')
 
     print('Loading data...')
-    data = simple.simple_utils.construct_modal_data(mode, pix_nside_neighbors, mc_source_id)
-    quality_cut = simple.filters.quality_filter(survey, data)
+    data = simple_utils.construct_modal_data(mode, pix_nside_neighbors, mc_source_id)
+    quality_cut = filters.quality_filter(survey, data)
     data = data[quality_cut]
     print('Found {} objects...').format(len(data))
 
-    data = simple.filters.dered_mag(survey, data)
+    data = filters.dered_mag(survey, data)
 
     # This should be generalized to also take the survey
     iso = isochrone_factory(name=isoname, survey=isosurvey, age=12, z=0.0001, distance_modulus=mod, band_1=band_1.lower(), band_2=band_2.lower())
 
     # g_radius estimate
-    filter = simple.filters.star_filter(survey, data)
+    filter = filters.star_filter(survey, data)
 
-    iso_filter = simple.simple_utils.cut_isochrone_path(data[mag_dered_1], data[mag_dered_2], data[mag_err_1], data[mag_err_2], iso, radius=0.1, return_all=False)
+    iso_filter = simple_utils.cut_isochrone_path(data[mag_dered_1], data[mag_dered_2], data[mag_err_1], data[mag_err_2], iso, radius=0.1, return_all=False)
 
-    angsep = ugali.utils.projector.angsep(ra, dec, data[basis_1], data[basis_2])
+    angsep = ugali.utils.projector.angsep(targ_ra, targ_dec, data[basis_1], data[basis_2])
 
     bins = np.linspace(0, 0.4, 21) # deg
     centers = 0.5*(bins[1:] + bins[0:-1])
@@ -167,162 +156,170 @@ def analysis(ra, dec, mod, mc_source_id):
     else:
         g_radius = half_point # deg
 
-    angsep = ugali.utils.projector.angsep(ra, dec, data[basis_1], data[basis_2])
+    angsep = ugali.utils.projector.angsep(targ_ra, targ_dec, data[basis_1], data[basis_2])
     nbhd = (angsep < g_radius)
 
     return(data, iso, g_radius, nbhd)
 
-def density_plot(ax, ra, dec, data, iso, g_radius, nbhd, type):
+def density_plot(targ_ra, targ_dec, data, iso, g_radius, nbhd, type):
     """Stellar density plot"""
 
     if type == 'stars':
-        filter = simple.filters.star_filter(survey, data)
-        #ax.set_title('Stellar Density')
-        ax.text(0.05, 0.95, 'Stars', transform=ax.transAxes, verticalalignment='top')
+        filter = filters.star_filter(survey, data)
+        plt.title('Stellar Density')
     elif type == 'galaxies':
-        filter = simple.filters.galaxy_filter(survey, data)
-        #ax.set_title('Galactic Density')
-        ax.text(0.05, 0.95, 'Galaxies', transform=ax.transAxes, verticalalignment='top')
+        filter = filters.galaxy_filter(survey, data)
+        plt.title('Galactic Density')
     elif type == 'blue_stars':
-        filter = simple.filters.color_filter(survey, data) \
-               & simple.filters.star_filter(survey, data)
-        #ax.set_title('Blue Stellar Density')
-        ax.text(0.05, 0.95, 'Blue stars', transform=ax.transAxes, verticalalignment='top')
+        filter = filters.color_filter(survey, data) \
+               & filters.star_filter(survey, data)
+        plt.title('Blue Stellar Density')
     
-    iso_filter = simple.simple_utils.cut_isochrone_path(data[mag_dered_1], data[mag_dered_2], data[mag_err_1], data[mag_err_2], iso, radius=0.1, return_all=False)
+    iso_filter = simple_utils.cut_isochrone_path(data[mag_dered_1], data[mag_dered_2], data[mag_err_1], data[mag_err_2], iso, radius=0.1, return_all=False)
 
     # projection of image
-    proj = ugali.utils.projector.Projector(ra, dec)
+    proj = ugali.utils.projector.Projector(targ_ra, targ_dec)
     x, y = proj.sphereToImage(data[filter & iso_filter][basis_1], data[filter & iso_filter][basis_2])
 
     bound = 0.5 #1.
     steps = 100.
     bins = np.linspace(-bound, bound, steps)
+
     signal = np.histogram2d(x, y, bins=[bins, bins])[0]
+
     sigma = 0.01 * (0.25 * np.arctan(0.25*g_radius*60. - 1.5) + 1.3)
+    
     convolution = scipy.ndimage.filters.gaussian_filter(signal, sigma/(bound/steps))
-    pc = ax.pcolormesh(bins, bins, convolution.T, cmap=cmap_gray)
+    plt.pcolormesh(bins, bins, convolution.T, cmap='Greys')
 
-    ax.set_xlim(bound, -bound)
-    ax.set_ylim(-bound, bound)
-    ax.set_xlabel(r'$\Delta$ RA (deg)')
-    ax.set_ylabel(r'$\Delta$ Dec (deg)')
+    plt.xlim(bound, -bound)
+    plt.ylim(-bound, bound)
+    plt.gca().set_aspect('equal')
+    plt.xlabel(r'$\Delta \alpha$ (deg)')
+    plt.ylabel(r'$\Delta \delta$ (deg)')
 
+    ax = plt.gca()
     divider = make_axes_locatable(ax)
     cax = divider.append_axes('right', size = '5%', pad=0)
-    plt.colorbar(pc, cax=cax, label='counts')
+    plt.colorbar(cax=cax)
 
-def star_plot(ax, ra, dec, data, iso, g_radius, nbhd):
+def star_plot(targ_ra, targ_dec, data, iso, g_radius, nbhd):
     """Star bin plot"""
 
-    filter = simple.filters.star_filter(survey, data)
+    filter = filters.star_filter(survey, data)
 
-    iso_filter = simple.simple_utils.cut_isochrone_path(data[mag_dered_1], data[mag_dered_2], data[mag_err_1], data[mag_err_2], iso, radius=0.1, return_all=False)
+    iso_filter = simple_utils.cut_isochrone_path(data[mag_dered_1], data[mag_dered_2], data[mag_err_1], data[mag_err_2], iso, radius=0.1, return_all=False)
 
     # projection of image
-    proj = ugali.utils.projector.Projector(ra, dec)
+    proj = ugali.utils.projector.Projector(targ_ra, targ_dec)
     x, y = proj.sphereToImage(data[filter & iso_filter][basis_1], data[filter & iso_filter][basis_2])
 
-    ax.scatter(x, y, edgecolor='none', s=3, c='black')
+    plt.scatter(x, y, edgecolor='none', s=3, c='black')
+    plt.xlim(0.2, -0.2)
+    plt.ylim(-0.2, 0.2)
+    plt.gca().set_aspect('equal')
+    plt.xlabel(r'$\Delta \alpha$ (deg)')
+    plt.ylabel(r'$\Delta \delta$ (deg)')
 
-    ax.set_xlim(0.25, -0.25)
-    ax.set_ylim(-0.25, 0.25)
-    ax.set_xlabel(r'$\Delta$ RA (deg)')
-    ax.set_ylabel(r'$\Delta$ Dec (deg)')
-    #ax.set_title('Stars')
+    plt.title('Stars')
 
-def cm_plot(ax, ra, dec, data, iso, g_radius, nbhd, type):
+def cm_plot(targ_ra, targ_dec, data, iso, g_radius, nbhd, type):
     """Color-magnitude plot"""
 
-    angsep = ugali.utils.projector.angsep(ra, dec, data[basis_1], data[basis_2])
+    angsep = ugali.utils.projector.angsep(targ_ra, targ_dec, data[basis_1], data[basis_2])
     annulus = (angsep > g_radius) & (angsep < 1.)
 
     if type == 'stars':
-        filter = simple.filters.star_filter(survey, data)
-        #ax.set_title('Stellar Color-Magnitude')
-        ax.text(0.05, 0.95, 'Stars', transform=ax.transAxes, verticalalignment='top')
+        filter = filters.star_filter(survey, data)
+        plt.title('Stellar Color-Magnitude')
     elif type == 'galaxies':
-        filter = simple.filters.galaxy_filter(survey, data)
-        #ax.set_title('Galactic Color-Magnitude')
-        ax.text(0.05, 0.95, 'Galaxies', transform=ax.transAxes, verticalalignment='top')
+        filter = filters.galaxy_filter(survey, data)
+        plt.title('Galactic Color-Magnitude')
 
-    iso_filter = simple.simple_utils.cut_isochrone_path(data[mag_dered_1], data[mag_dered_2], data[mag_err_1], data[mag_err_2], iso, radius=0.1, return_all=False)
+    iso_filter = simple_utils.cut_isochrone_path(data[mag_dered_1], data[mag_dered_2], data[mag_err_1], data[mag_err_2], iso, radius=0.1, return_all=False)
 
     # Plot background objects
-    ax.scatter(data[mag_dered_1][filter & annulus] - data[mag_dered_2][filter & annulus], data[mag_dered_1][filter & annulus], c='k', alpha=0.1, edgecolor='none', s=1)
+    plt.scatter(data[mag_dered_1][filter & annulus] - data[mag_dered_2][filter & annulus], data[mag_dered_1][filter & annulus], c='k', alpha=0.1, edgecolor='none', s=1)
 
     # Plot isochrone
     ugali.utils.plotting.drawIsochrone(iso, lw=2, label='{} Gyr, z = {}'.format(iso.age, iso.metallicity))
 
     # Plot objects in nbhd
-    ax.scatter(data[mag_dered_1][filter & nbhd] - data[mag_dered_2][filter & nbhd], data[mag_dered_2][filter & nbhd], c='g', s=5, label='r < {:.3f}$^\circ$'.format(g_radius))
+    plt.scatter(data[mag_dered_1][filter & nbhd] - data[mag_dered_2][filter & nbhd], data[mag_dered_2][filter & nbhd], c='g', s=5, label='r < {:.3f}$^\circ$'.format(g_radius))
 
     # Plot objects in nbhd and near isochrone
-    ax.scatter(data[mag_dered_1][filter & nbhd & iso_filter] - data[mag_dered_2][filter & nbhd & iso_filter], data[mag_dered_1][filter & nbhd & iso_filter], c='r', s=5, label='$\Delta$CM < 0.1')
+    plt.scatter(data[mag_dered_1][filter & nbhd & iso_filter] - data[mag_dered_2][filter & nbhd & iso_filter], data[mag_dered_1][filter & nbhd & iso_filter], c='r', s=5, label='$\Delta$CM < 0.1')
 
-    ax.legend(loc='upper left')
+    plt.axis([-0.5, 1, 16, mag_max])
+    plt.gca().invert_yaxis()
+    plt.gca().set_aspect(1./4.)
+    plt.legend(loc='upper left')
+    plt.xlabel('{} - {} (mag)'.format(band_1.lower(), band_2.lower()))
+    plt.ylabel('{} (mag)'.format(band_1.lower()))
 
-    ax.set_xlim(-0.5, 1)
-    ax.set_ylim(mag_max, 16)
-    ax.set_xlabel('{} - {} (mag)'.format(band_1.lower(), band_2.lower()))
-    ax.set_ylabel('{} (mag)'.format(band_1.lower()))
-
-def hess_plot(ax, ra, dec, data, iso, g_radius, nbhd):
+def hess_plot(targ_ra, targ_dec, data, iso, g_radius, nbhd):
     """Hess plot"""
 
-    filter = simple.filters.star_filter(survey, data)
+    filter = filters.star_filter(survey, data)
 
-    #ax.set_title('Hess')
+    plt.title('Hess')
 
-    c1 = SkyCoord(ra, dec, unit='deg')
+    c1 = SkyCoord(targ_ra, targ_dec, unit='deg')
 
     r_near = 2.*g_radius # annulus begins at 2*g_radius away from centroid
     r_far = np.sqrt(5.)*g_radius # annulus has same area as inner area
 
     #inner = (c1.separation(SkyCoord(data[basis_1], data[basis_2], unit='deg')).deg < g_radius)
     #outer = (c1.separation(SkyCoord(data[basis_1], data[basis_2], unit='deg')).deg > r_near) & (c1.separation(SkyCoord(data[basis_1], data[basis_2], unit='deg')).deg < r_far)
-    angsep = ugali.utils.projector.angsep(ra, dec, data[basis_1], data[basis_2])
+    angsep = ugali.utils.projector.angsep(targ_ra, targ_dec, data[basis_1], data[basis_2])
     inner = (angsep < g_radius)
     outer = ((angsep > r_near) & (angsep < r_far))
 
     xbins = np.arange(-0.5, 1.1, 0.1)
     ybins = np.arange(16., mag_max + 0.5, 0.5)
+
     foreground = np.histogram2d(data[mag_dered_1][inner & filter] - data[mag_dered_2][inner & filter], data[mag_dered_1][inner & filter], bins=[xbins, ybins])
     background = np.histogram2d(data[mag_dered_1][outer & filter] - data[mag_dered_2][outer & filter], data[mag_dered_1][outer & filter], bins=[xbins, ybins])
+
     fg = foreground[0].T
     bg = background[0].T
+
     fg_abs = np.absolute(fg)
     bg_abs = np.absolute(bg)
+
     mask_abs = fg_abs + bg_abs
-    mask_abs[mask_abs == 0.] = np.nan # mask common zeroes
+    mask_abs[mask_abs == 0.] = np.nan # mask signficiant zeroes
+
     signal = fg - bg
     signal = np.ma.array(signal, mask=np.isnan(mask_abs)) # mask nan
 
-    pc = ax.pcolormesh(xbins, ybins, signal, cmap=cmap_gray_mask)
+    cmap = matplotlib.cm.viridis
+    cmap.set_bad('w', 1.)
+    plt.pcolormesh(xbins, ybins, signal, cmap=cmap)
+
+    plt.colorbar()
+
     ugali.utils.plotting.drawIsochrone(iso, lw=2, c='k', zorder=10, label='Isocrhone')
 
-    ax.set_xlim(-0.5, 1.0)
-    ax.set_ylim(mag_max, 16)
-    ax.set_xlabel('{} - {} (mag)'.format(band_1.lower(), band_2.lower()))
-    ax.set_ylabel('{} (mag)'.format(band_1.lower()))
+    plt.axis([-0.5, 1.0, 16, mag_max])
+    plt.gca().invert_yaxis()
+    plt.gca().set_aspect(1./4.)
+    plt.xlabel('{} - {} (mag)'.format(band_1.lower(), band_2.lower()))
+    plt.ylabel('{} (mag)'.format(band_1.lower()))
 
-    divider = make_axes_locatable(ax)
-    cax = divider.append_axes('right', size = '5%', pad=0)
-    plt.colorbar(pc, cax=cax, label='counts')
-
-def radial_plot(ax, ra, dec, data, iso, g_radius, nbhd, field_density=None):
+def radial_plot(targ_ra, targ_dec, data, iso, g_radius, nbhd, field_density=None):
     """Radial distribution plot"""
 
     ## Deprecated?
-    #filter_s = simple.filters.star_filter(survey, data)
-    #filter_g = simple.filters.galaxy_filter(survey, data)
+    #filter_s = filters.star_filter(survey, data)
+    #filter_g = filters.galaxy_filter(survey, data)
 
-    #ax.set_title('Radial Distribution')
+    plt.title('Radial Distribution')
 
-    angsep = ugali.utils.projector.angsep(ra, dec, data[basis_1], data[basis_2])
+    angsep = ugali.utils.projector.angsep(targ_ra, targ_dec, data[basis_1], data[basis_2])
 
     # Isochrone filtered/unfiltered
-    iso_seln_f = simple.simple_utils.cut_isochrone_path(data[mag_dered_1], data[mag_dered_2], data[mag_err_1], data[mag_err_2], iso, radius=0.1, return_all=False)
+    iso_seln_f = simple_utils.cut_isochrone_path(data[mag_dered_1], data[mag_dered_2], data[mag_err_1], data[mag_err_2], iso, radius=0.1, return_all=False)
     iso_seln_u = ~iso_seln_f
 
     bins = np.linspace(0, 0.4, 21) # deg
@@ -331,9 +328,9 @@ def radial_plot(ax, ra, dec, data, iso, g_radius, nbhd, field_density=None):
 
     def interp_values(type, seln):
         if type == 'stars':
-            filter = simple.filters.star_filter(survey, data)
+            filter = filters.star_filter(survey, data)
         elif type == 'galaxies':
-            filter = simple.filters.galaxy_filter(survey, data)
+            filter = filters.galaxy_filter(survey, data)
 
         if seln == 'f':
             iso_filter = iso_seln_f
@@ -350,9 +347,9 @@ def radial_plot(ax, ra, dec, data, iso, g_radius, nbhd, field_density=None):
 
     def value_errors(type, seln):
         if type == 'stars':
-            filter = simple.filters.star_filter(survey, data)
+            filter = filters.star_filter(survey, data)
         elif type == 'galaxies':
-            filter = simple.filters.galaxy_filter(survey, data)
+            filter = filters.galaxy_filter(survey, data)
         if seln == 'f':
             iso_filter = iso_seln_f
         elif seln == 'u':
@@ -373,39 +370,35 @@ def radial_plot(ax, ra, dec, data, iso, g_radius, nbhd, field_density=None):
             if pairs[i] == peak:
                 return i
 
-    ax.axvline(x=f_range[peak_index(pairs,peak)], color='m', label='peak')
+    plt.axvline(x=f_range[peak_index(pairs,peak)], color='m', label='peak')
 
-    ax.axvline(x=g_radius, color='r', label='g_radius')
+    plt.axvline(x=g_radius, color='r', label='g_radius')
 
     f_range, f_val = interp_values('galaxies', 'f')
-    ax.plot(f_range, f_val, '-g', label='Filtered Galaxies')
+    plt.plot(f_range, f_val, '-g', label='Filtered Galaxies')
 
     f_range, f_val = interp_values('stars', 'u')
-    ax.plot(f_range, f_val, '-k', alpha=0.25, label='Unfiltered Stars')
+    plt.plot(f_range, f_val, '-k', alpha=0.25, label='Unfiltered Stars')
 
     val, y_err = value_errors('stars', 'f')
-    ax.plot(centers, val, '.b')
-    ax.errorbar(centers, val, yerr=y_err, fmt='none', ecolor='b', elinewidth=1, capsize=5)
+    plt.plot(centers, val, '.b')
+    plt.errorbar(centers, val, yerr=y_err, fmt='none', ecolor='b', elinewidth=1, capsize=5)
 
     f_range, f_val = interp_values('stars', 'f')
-    ax.plot(f_range, f_val, '-b', label='Filtered Stars')
+    plt.plot(f_range, f_val, '-b', label='Filtered Stars')
 
     if field_density:
-        ax.axhline(y=field_density, color='blue', ls='--', label='Model Field')
+        plt.axhline(y=field_density, color='blue', ls='--', label='Model Field')
 
     ymax = plt.ylim()[1]
-    ax.annotate(r'$\approx %0.1f$' + str(round(g_radius, 3)) + '$^\circ$', (g_radius*1.1, ymax/50.), color='red', bbox=dict(boxstyle='round,pad=0.0', fc='white', alpha=0.75, ec='white', lw=0))
+    plt.annotate(r'$\approx %0.1f$' + str(round(g_radius, 3)) + '$^\circ$', (g_radius*1.1, ymax/50.), color='red', bbox=dict(boxstyle='round,pad=0.0', fc='white', alpha=0.75, ec='white', lw=0))
+    plt.xlim(bins[0], bins[-1])
+    plt.ylim(0., ymax)
+    plt.legend(loc='upper right')
+    plt.xlabel('Angular Separation (deg)')
+    plt.ylabel('Denisty (arcmin$^{-2})$')
 
-    ax.legend(loc='upper right')
-
-    #ax.set_xlim(bins[0], bins[-1])
-    #ax.set_ylim(0., ymax)
-    ax.set_xscale('log')
-    ax.set_yscale('log')
-    ax.set_xlabel('Angular Separation (deg)')
-    ax.set_ylabel('Denisty (arcmin$^{-2})$')
-
-#def maglim_plot(ra, dec, data, iso, band):
+#def maglim_plot(targ_ra, targ_dec, data, iso, band):
 #    """Maglim plots"""
 #
 #    reso = 0.5
@@ -416,11 +409,11 @@ def radial_plot(ax, ra, dec, data, iso, g_radius, nbhd, field_density=None):
 #        m_maglim_g = reader[1].data.field('I').flatten()
 #        reader.close()
 #        m_maglim_g[np.isnan(m_maglim_g)] = healpy.UNSEEN
-#        #healpy.gnomview(m_maglim_g, fig='summary', rot=(ra, dec, 0.), reso=reso, xsize=xsize, title='maglim g (S/N =10)', sub=(3, 4, 11))
-#        healpy.gnomview(m_maglim_g, rot=(ra, dec, 0.), reso=reso, xsize=xsize, title='maglim g (S/N =10)', sub=(3, 4, 8))
+#        #healpy.gnomview(m_maglim_g, fig='summary', rot=(targ_ra, targ_dec, 0.), reso=reso, xsize=xsize, title='maglim g (S/N =10)', sub=(3, 4, 11))
+#        healpy.gnomview(m_maglim_g, rot=(targ_ra, targ_dec, 0.), reso=reso, xsize=xsize, title='maglim g (S/N =10)', sub=(3, 4, 8))
 #    elif band == 'r':
 #        reader = pyfits.open(maglim_r)
 #        m_maglim_r = reader[1].data.field('I').flatten()
 #        reader.close()
 #        m_maglim_r[np.isnan(m_maglim_r)] = healpy.UNSEEN
-#        healpy.gnomview(m_maglim_r, rot=(ra, dec, 0.), reso=reso, xsize=xsize, title='maglim r (S/N =10)', sub=(3, 4, 12))
+#        healpy.gnomview(m_maglim_r, rot=(targ_ra, targ_dec, 0.), reso=reso, xsize=xsize, title='maglim r (S/N =10)', sub=(3, 4, 12))
