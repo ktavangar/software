@@ -39,7 +39,9 @@ mag_dered_2 = mag_dered.format(band_2.upper())
 
 def quality_filter(survey, data):
     """Return data above a quality threshold"""
-    if survey == 'y3_gold_2_0':
+    if survey == 'decals_dr7':
+        cut = (data[mag_1] < mag_max)
+    elif survey == 'y3_gold_2_0':
         cut = (data[mag_1] < mag_max)
     elif survey == 'y3a2':
         cut = (data['PSF_MAG_SFD_G'] < mag_max)
@@ -81,7 +83,9 @@ def quality_filter(survey, data):
 
 def star_filter(survey, data):
     """Return stellar-like objects"""
-    if survey == 'y3_gold_2_0':
+    if survey == 'decals_dr7':
+        cut = (data['EXTENDED_CLASS'] == 0)
+    elif survey == 'y3_gold_2_0':
         cut = (data['EXTENDED_CLASS_MASH_SOF'] >= 0) \
             & (data['EXTENDED_CLASS_MASH_SOF'] <= 2)
     elif survey == 'y3a2':
@@ -103,6 +107,8 @@ def star_filter(survey, data):
 
 def galaxy_filter(survey, data):
     """Return stellar-like objects"""
+    if survey == 'decals_dr7':
+        cut = (data['EXTENDED_CLASS'] == 1)
     if survey == 'y3_gold_2_0':
         cut = (data['EXTENDED_CLASS_MASH_SOF'] > 2)
     elif survey == 'y3a2':
@@ -119,7 +125,9 @@ def galaxy_filter(survey, data):
 
 def color_filter(survey, data):
     """Return blue objects"""
-    if survey == 'y3_gold_2_0':
+    if survey == 'decals_dr7':
+        cut = ((data[mag_1] - data[mag_2]) < 0.4) # 0.2
+    elif survey == 'y3_gold_2_0':
         #cut = ((data['SOF_PSF_MAG_CORRECTED_G'] - data['SOF_PSF_MAG_CORRECTED_R']) < 0.4) # 0.2
         cut = ((data[mag_1] - data[mag_2]) < 0.4) # 0.2
     elif survey == 'y3a2':
@@ -137,7 +145,10 @@ def color_filter(survey, data):
 def dered_mag(survey, data):
     """Return the data with an added flag for dereddened (extinction
        corrected) magnitude"""
-    if survey == 'y3_gold_2_0':
+    if survey == 'decals_dr7':
+        #cut = ((data['SOF_PSF_MAG_CORRECTED_G'] - data['SOF_PSF_MAG_CORRECTED_R']) < 0.4) # 0.2
+        cut = numpy.lib.recfunctions.append_fields(data, [mag_dered_1, mag_dered_2], [data[mag_1], data[mag_2]], usemask=False, asrecarray=True)
+    elif survey == 'y3_gold_2_0':
         #data = mlab.rec_append_fields(data, [mag_g, mag_r], [data['SOF_PSF_MAG_CORRECTED_G'], data['SOF_PSF_MAG_CORRECTED_R']])
         data = numpy.lib.recfunctions.append_fields(data, [mag_dered_1, mag_dered_2], [data[mag_1], data[mag_2]], usemask=False, asrecarray=True)
         #data = ugali.utils.mlab.rec_append_fields(data, [mag_g, mag_r], [data['SOF_PSF_MAG_CORRECTED_G'], data['SOF_PSF_MAG_CORRECTED_R']])
