@@ -1,0 +1,6 @@
+
+[Added Associations]
+image/fits=gnome-eog.desktop;gedit.desktop;
+
+[Default Applications]
+image/fits=gimp.desktop

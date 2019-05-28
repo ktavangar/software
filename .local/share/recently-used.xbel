@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xbel version="1.0"
+      xmlns:bookmark="http://www.freedesktop.org/standards/desktop-bookmarks"
+      xmlns:mime="http://www.freedesktop.org/standards/shared-mime-info"
+>
+  <bookmark href="file:///home/s1/tavangar/decals/raw/sweep-000m005-010p000.fits" added="2019-05-08T04:46:11Z" modified="2019-05-08T04:46:11Z" visited="2019-05-08T05:01:18Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/fits"/>
+        <bookmark:groups>
+          <bookmark:group>gedit</bookmark:group>
+        </bookmark:groups>
+        <bookmark:applications>
+          <bookmark:application name="gedit" exec="&apos;gedit %u&apos;" modified="2019-05-08T04:46:11Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/s1/tavangar/smau_simple/config.yaml" added="2019-05-08T05:01:18Z" modified="2019-05-08T05:01:18Z" visited="2019-05-08T05:01:18Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/plain"/>
+        <bookmark:groups>
+          <bookmark:group>gedit</bookmark:group>
+        </bookmark:groups>
+        <bookmark:applications>
+          <bookmark:application name="gedit" exec="&apos;gedit %u&apos;" modified="2019-05-08T05:01:18Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/s1/tavangar/smau_simple/search_algorithm.py" added="2019-05-08T05:01:21Z" modified="2019-05-08T05:01:21Z" visited="2019-05-08T05:01:22Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/x-python"/>
+        <bookmark:groups>
+          <bookmark:group>gedit</bookmark:group>
+        </bookmark:groups>
+        <bookmark:applications>
+          <bookmark:application name="gedit" exec="&apos;gedit %u&apos;" modified="2019-05-08T05:01:21Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/s1/tavangar/decals/healpix/decals-dr7.1-sweep_02458.fits" added="2019-05-08T05:07:29Z" modified="2019-05-08T05:07:31Z" visited="2019-05-08T05:07:30Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/fits"/>
+        <bookmark:groups>
+          <bookmark:group>gedit</bookmark:group>
+        </bookmark:groups>
+        <bookmark:applications>
+          <bookmark:application name="nautilus" exec="&apos;gedit %U&apos;" modified="2019-05-08T05:07:29Z" count="1"/>
+          <bookmark:application name="gedit" exec="&apos;gedit %u&apos;" modified="2019-05-08T05:07:31Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/s1/tavangar/smau_simple/farm_plots.py" added="2019-05-08T14:23:35Z" modified="2019-05-08T14:23:35Z" visited="2019-05-08T14:23:36Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/x-python"/>
+        <bookmark:groups>
+          <bookmark:group>gedit</bookmark:group>
+        </bookmark:groups>
+        <bookmark:applications>
+          <bookmark:application name="gedit" exec="&apos;gedit %u&apos;" modified="2019-05-08T14:23:35Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/s1/tavangar/smau_simple/make_plot.py" added="2019-05-08T18:39:00Z" modified="2019-05-08T18:39:00Z" visited="2019-05-08T18:39:01Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/x-python"/>
+        <bookmark:groups>
+          <bookmark:group>gedit</bookmark:group>
+        </bookmark:groups>
+        <bookmark:applications>
+          <bookmark:application name="gedit" exec="&apos;gedit %u&apos;" modified="2019-05-08T18:39:00Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/s1/smau/setup.sh" added="2019-05-08T19:16:45Z" modified="2019-05-09T01:57:29Z" visited="2019-05-08T19:16:45Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="application/x-shellscript"/>
+        <bookmark:groups>
+          <bookmark:group>gedit</bookmark:group>
+        </bookmark:groups>
+        <bookmark:applications>
+          <bookmark:application name="gedit" exec="&apos;gedit %u&apos;" modified="2019-05-09T01:57:29Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/s1/tavangar/simple_example/config.yaml" added="2019-05-09T01:56:10Z" modified="2019-05-09T16:10:34Z" visited="2019-05-09T01:56:10Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/plain"/>
+        <bookmark:groups>
+          <bookmark:group>gedit</bookmark:group>
+        </bookmark:groups>
+        <bookmark:applications>
+          <bookmark:application name="gedit" exec="&apos;gedit %u&apos;" modified="2019-05-09T16:10:34Z" count="9"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/s1/tavangar/simple_example/setup.sh" added="2019-05-09T01:56:55Z" modified="2019-05-09T01:59:42Z" visited="2019-05-09T01:56:56Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="application/x-shellscript"/>
+        <bookmark:groups>
+          <bookmark:group>gedit</bookmark:group>
+        </bookmark:groups>
+        <bookmark:applications>
+          <bookmark:application name="gedit" exec="&apos;gedit %u&apos;" modified="2019-05-09T01:59:42Z" count="3"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/s1/tavangar/simple_example/candidate_list.fits" added="2019-05-09T02:06:33Z" modified="2019-05-09T02:08:40Z" visited="2019-05-09T02:06:33Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="image/fits"/>
+        <bookmark:applications>
+          <bookmark:application name="nautilus" exec="&apos;gedit %U&apos;" modified="2019-05-09T02:08:40Z" count="4"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/s1/tavangar/simple_example/data_50.00_-50.00.csv" added="2019-05-09T02:08:59Z" modified="2019-05-09T02:09:02Z" visited="2019-05-09T02:08:59Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/csv"/>
+        <bookmark:groups>
+          <bookmark:group>gedit</bookmark:group>
+        </bookmark:groups>
+        <bookmark:applications>
+          <bookmark:application name="nautilus" exec="&apos;gedit %U&apos;" modified="2019-05-09T02:08:59Z" count="1"/>
+          <bookmark:application name="gedit" exec="&apos;gedit %u&apos;" modified="2019-05-09T02:09:02Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/s1/tavangar/simple_example/data_323.35_-0.89.csv" added="2019-05-09T02:09:49Z" modified="2019-05-09T02:09:52Z" visited="2019-05-09T02:09:50Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/csv"/>
+        <bookmark:groups>
+          <bookmark:group>gedit</bookmark:group>
+        </bookmark:groups>
+        <bookmark:applications>
+          <bookmark:application name="nautilus" exec="&apos;gedit %U&apos;" modified="2019-05-09T02:09:49Z" count="1"/>
+          <bookmark:application name="gedit" exec="&apos;gedit %u&apos;" modified="2019-05-09T02:09:52Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/s1/tavangar/robots.txt" added="2019-05-09T12:47:25Z" modified="2019-05-09T12:47:25Z" visited="2019-05-09T12:47:26Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/plain"/>
+        <bookmark:groups>
+          <bookmark:group>gedit</bookmark:group>
+        </bookmark:groups>
+        <bookmark:applications>
+          <bookmark:application name="gedit" exec="&apos;gedit %u&apos;" modified="2019-05-09T12:47:25Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/s1/tavangar/legacysurvey_dr7_sweep_7.1.sha256sum" added="2019-05-09T12:47:54Z" modified="2019-05-09T12:47:54Z" visited="2019-05-09T12:47:54Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/plain"/>
+        <bookmark:groups>
+          <bookmark:group>gedit</bookmark:group>
+        </bookmark:groups>
+        <bookmark:applications>
+          <bookmark:application name="gedit" exec="&apos;gedit %u&apos;" modified="2019-05-09T12:47:54Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/s1/tavangar/smau_simple/plotting/make_plot.py" added="2019-05-09T16:03:49Z" modified="2019-05-09T16:04:28Z" visited="2019-05-09T16:03:49Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/x-python"/>
+        <bookmark:groups>
+          <bookmark:group>gedit</bookmark:group>
+        </bookmark:groups>
+        <bookmark:applications>
+          <bookmark:application name="gedit" exec="&apos;gedit %u&apos;" modified="2019-05-09T16:04:28Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/s1/kadrlica/software/ugali/catalogs/catalogs-v1.x.x" added="2019-05-09T18:04:03Z" modified="2019-05-09T18:04:03Z" visited="2019-05-09T18:04:03Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/plain"/>
+        <bookmark:groups>
+          <bookmark:group>gedit</bookmark:group>
+        </bookmark:groups>
+        <bookmark:applications>
+          <bookmark:application name="gedit" exec="&apos;gedit %u&apos;" modified="2019-05-09T18:04:03Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+</xbel>

@@ -1,0 +1,14 @@
+_XSERVTransmkdir: Owner of /tmp/.X11-unix should be set to root
+
+Xvnc TigerVNC 1.1.0 - built Mar 22 2017 15:56:21
+Copyright (C) 1999-2011 TigerVNC Team and many others (see README.txt)
+See http://www.tigervnc.org for information on TigerVNC.
+Underlying X server release 11704000, The X.Org Foundation
+
+
+Wed May  8 21:04:09 2019
+ vncext:      VNC extension running!
+ vncext:      Listening for VNC connections on all interface(s), port 5902
+ vncext:      created VNC server for screen 0
+/home/s1/tavangar/.vnc/xstartup: line 28: xterm: command not found
+/home/s1/tavangar/.vnc/xstartup: line 29: twm: command not found
