@@ -2,7 +2,8 @@
 """
 Filters for different surveys
 """
-__author__ = "Sidney Mau"
+__author__ = "Kiyan Tavangar"
+## Adapted from code provided by Sidney Mau
 
 import yaml
 import numpy as np
