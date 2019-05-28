@@ -201,7 +201,7 @@ def density_plot(ax, targ_ra, targ_dec, data, iso, g_radius, nbhd, type):
     #axe = plt.gca()
     divider = make_axes_locatable(ax)
     cax = divider.append_axes('right', size = '5%', pad=0)
-    ax.colorbar(cax=cax)
+    plt.colorbar(cax=cax)
 
 def star_plot(ax, targ_ra, targ_dec, data, iso, g_radius, nbhd):
     """Star bin plot"""
@@ -295,7 +295,7 @@ def hess_plot(ax, targ_ra, targ_dec, data, iso, g_radius, nbhd):
     cmap.set_bad('w', 1.)
     ax.pcolormesh(xbins, ybins, signal, cmap=cmap)
 
-    ax.colorbar()
+    plt.colorbar()
 
     ugali.utils.plotting.drawIsochrone(iso, lw=2, c='k', zorder=10, label='Isocrhone')
 
