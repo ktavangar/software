@@ -1,5 +1,5 @@
 setup:
-    simple_dir : '/home/s1/smau/software/simple/simple'
+    simple_dir : '/home/s1/tavangar/tavangar_simple'
 
 output:
     results_dir : '.'
@@ -9,7 +9,43 @@ output:
 batch:
     jobs: 10s
 
-survey: 'y3_gold_2_0'
+#survey: 'y3_gold_2_0'
+survey: 'decals_dr7'
+
+decals_dr7:
+    mode : 0 # 0: real, 1: real+sim, 2: candidates
+    sim_population : '/home/s1/kadrlica/projects/mw_substructure/y3a2/sim_population/v12_des/sim_population_v12_des_mc_source_id_0000001-0100000.fits'
+    sim_dir: '/home/s1/kadrlica/projects/mw_substructure/y3a2/sim_population/v12_des'
+    nside          : 32
+    datadir        : '/data/des40.b/data/decals/dr7/skim'
+    isoname: 'Bressan2012'
+    isosurvey: 'des'
+    object_list: 'object_list.csv'
+    candidate_list : 'candidate_list.fits'
+    mag_max : 24.5
+
+    basis_1: 'RA'
+    basis_2: 'DEC'
+
+    band_1: 'G'
+    band_2: 'R'
+    band_3: 'Z'
+    mag: 'MAG_{}'
+    mag_err: 'MAG_ERR_{}'
+    mag_dered: 'MAG_SFD_{}'
+
+    mag_g : 'MAG_G'
+    mag_r : 'MAG_R'
+    mag_z : 'MAG_Z'
+    mag_g_err : 'MAG_ERR_G'
+    mag_r_err : 'MAG_ERR_R'
+    mag_z_err : 'MAG_ERR_Z'
+
+    star_galaxy_classification : 'EXTENDED_CLASS'
+
+    fracdet_gz : None
+    fracdet : None
+
 
 y3_gold_2_0:
     mode : 0 # 0: real, 1: real+sim, 2: candidates
