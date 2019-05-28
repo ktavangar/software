@@ -148,7 +148,7 @@ def dered_mag(survey, data):
        corrected) magnitude"""
     if survey == 'decals_dr7':
         #cut = ((data['SOF_PSF_MAG_CORRECTED_G'] - data['SOF_PSF_MAG_CORRECTED_R']) < 0.4) # 0.2
-        cut = numpy.lib.recfunctions.append_fields(data, [mag_dered_1, mag_dered_2], [data[mag_1], data[mag_2]], usemask=False, asrecarray=True)
+        #cut = numpy.lib.recfunctions.append_fields(data, [mag_dered_1, mag_dered_2], [data[mag_1], data[mag_2]], usemask=False, asrecarray=True)
     elif survey == 'y3_gold_2_0':
         #data = mlab.rec_append_fields(data, [mag_g, mag_r], [data['SOF_PSF_MAG_CORRECTED_G'], data['SOF_PSF_MAG_CORRECTED_R']])
         data = numpy.lib.recfunctions.append_fields(data, [mag_dered_1, mag_dered_2], [data[mag_1], data[mag_2]], usemask=False, asrecarray=True)
